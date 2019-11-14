@@ -1,5 +1,5 @@
-    #include <stdio.h> 
-#include<stdbool.h>
+#include <stdio.h> 
+#include <stdbool.h>
 #include <string.h>     //strlen 
 #include <stdlib.h> 
 #include <errno.h> 
@@ -113,9 +113,13 @@ char* fromDeci(char res[], int base, long inputNum)
         
         if(compare1(hash, crypt(fromDeci(temp, 36, i),"aa")))
         {
-            printf("Hash found: %s \n",fromDeci(temp, 36, i));
-            write(serverfd, "found", sizeof("found"));            //send over flag
-            write(serverfd, fromDeci(temp, 36, i), sizeof(fromDeci(temp, 36, i)));
+            char pass[100] = "found :";                           //password with found
+            printf("Hash found: %s \n",fromDeci(temp, 36, i));  
+            strcat(pass, fromDeci(temp, 36, i));
+            write(serverfd, pass, sizeof(pass));            //send over flag
+            
+           // sleep(0.1);
+            //write(serverfd, fromDeci(temp, 36, i), sizeof(fromDeci(temp, 36, i)));
             exit(0);
         }
     }
@@ -145,14 +149,16 @@ int main(int argc, char **argv)
     
  
     for(int i =0; i<6; i++) {
-    requestPacket(sendBuffer, "firstPacket", receiveBuffer, serverfd, hash);
-
+        requestPacket(sendBuffer, "firstPacket", receiveBuffer, serverfd, hash);
+        
     }
     
     
          
     
 }
+
+
 
 
 
