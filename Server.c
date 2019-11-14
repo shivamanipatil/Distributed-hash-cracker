@@ -1,19 +1,16 @@
-//Example code: A simple server side code, which echos back the received message. 
-//Handle multiple socket connections with select and fd_set on Linux 
-
 
 #include <stdio.h> 
-#include<stdbool.h>
-#include <string.h>     //strlen 
+#include <stdbool.h>
+#include <string.h>         //strlen 
 #include <stdlib.h> 
 #include <errno.h> 
-#include <unistd.h>    //close 
-#include <arpa/inet.h> //close 
+#include <unistd.h>         //close 
+#include <arpa/inet.h>      //close 
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <netinet/in.h> 
-#include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
-#include <crypt.h>    // hashing function
+#include <sys/time.h>       //FD_SET, FD_ISSET, FD_ZERO macros 
+#include <crypt.h>          // hashing function
  
  
  
@@ -42,6 +39,7 @@ bool compare1(char msg[], char buffer[])
 
 
 
+
 // Functions to convert int number to any base string                   
 
 char reVal(int num) 
@@ -51,8 +49,9 @@ char reVal(int num)
     else
         return (char)(num - 10 + 'A'); 
 } 
-  
-void strev(char *str)                   // Utility function to reverse a string 
+
+// function to reverse a string 
+void strev(char *str)                  
 { 
     int len = strlen(str); 
     int i; 
@@ -121,6 +120,9 @@ char *rand_string(char *str, int size)
         char c = charset[rand() % 36];
         str[i] = c;   
     }
+    str[size] = '\0';
+    
+    
     
     return str;
 }   
@@ -128,7 +130,7 @@ char *rand_string(char *str, int size)
  
  
  
- //generate random password from rand_string
+ //generate crypt from rand_string
  
  char* generatePassword(char *pass)
  {
@@ -142,11 +144,10 @@ char *rand_string(char *str, int size)
   
 // main 
    
-int main(int argc , char *argv[]) 
+int main(int argc , char **argv) 
 { 
     
-    srand(time(0));     //seeding rand with time
-    
+   
     int range = 0;      // This is count for range
     
     
@@ -168,11 +169,11 @@ int main(int argc , char *argv[])
     
      // random password generated
    
-    char message[100] = "60000";
-    char* hash;
-    //rand_string(message, 5);
+    char message[100] = "BCDES";
+    char* hash ;
     hash = generatePassword(message);
-    printf("Random password is created: %s \n",message);
+    
+    printf("Password is created: %s \n",message);
     printf("It's hash is: %s\n",hash);
      
     
@@ -359,11 +360,13 @@ int main(int argc , char *argv[])
                         close( sd ); 
                         client_socket[i] = 0; 
                     }
-                    else if(compare1("found", buffer))
+                    else if(memcmp( buffer, "found", strlen("found")) == 0)
                     {
-                        printf("Password found: ");
-                        read(sd, buffer, sizeof(buffer));
-                        printf("%s",buffer);
+                        printf("Password %s ", buffer);
+                        // bzero(&buffer, sizeof(buffer));
+                        // read(sd, buffer, sizeof(buffer));
+                        
+                        // printf("%s", buffer);
                         exit(0);
                     }
                     else
